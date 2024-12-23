@@ -1,11 +1,13 @@
 //A simple program that helps you calculate your budget
 #include <iostream> //For basic I/O operation
-#include <windows.h>
-#include <conio.h>
+#include <windows.h> //For the Sleep function
+#include <conio.h> //For the getch() function
 
 #define red system("color 4") // we define color red to  be used when errors are displayed
 
 using namespace std;
+
+//function decleration
 void Loading();
 
 const int MAX_ITEMS = 100;// Maximum anticipated number for items in a particular budget
@@ -51,7 +53,7 @@ int main()
             }
             else
             {
-                throw(404);
+                throw(404); // exception if the user enters a wrong character
             }
         }
         catch(int wrongInput)
