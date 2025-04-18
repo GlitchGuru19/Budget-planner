@@ -39,4 +39,27 @@ void Loading () //This function displays loading on the screen when moving from 
         system ("cls");
 }
 
+
+void Login()
+{
+    string username = "Carlos20", password = "LovesC#";
+    string getUser, getPassword;
+
+    cout << "\t\tWelcome to the Budget Planner" <<endl << endl;
+    cout << "Enter your user name: ";
+    cin >> getUser;
+    cout << "Enter your password: ";
+    cin >> getPassword;
+
+    if (getUser == username && getPassword == password)
+    {
+        cout << "Correct credentials." << endl;
+    }
+    else
+    {
+        cout << "Wrong credentials." << endl;
+        exit(0);
+    }
+}
+
 #endif // BUDGETPLANNER_H_INCLUDED

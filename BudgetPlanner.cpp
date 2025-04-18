@@ -4,6 +4,7 @@
 #include <conio.h>
 
 using namespace std;
+
 void Loading();
 
 const int MAX_ITEMS = 100;// Maximum anticipated number for items in a particular budget
@@ -20,7 +21,9 @@ int main()
     int itemCount;
     float budget;
 
-    cout << "How many items do you want to calculate (max " << MAX_ITEMS << ") ? " << endl;
+    Login();
+
+    cout << endl <<"How many items do you want to calculate (max " << MAX_ITEMS << ") ? " << endl;
     cout << "Enter your response here: ";
     cin >> itemCount;
     if (itemCount > MAX_ITEMS || itemCount <= 0) // simple error checker to see if the user inputs a wrong number which is on the boundaries
