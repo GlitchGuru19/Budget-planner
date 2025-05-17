@@ -1,6 +1,19 @@
-Date: 2025-05-17
+Date: 17-05-2025
 Fruiticana: K 13
 Gogoes: K 3.5
 Gogoes: K 3.5
 Total Expenses: K 20
+----
+Date: 17-05-2025
+Budget: K 23
+talk time: K 10
+chirpy: K 6
+Total Expenses: K 16
+Remaining: K 7
+----
+Date: 17-05-2025
+Budget: K 450
+jiggies: K 1.5
+Total Expenses: K 1.5
+Remaining: K 448.5
 ----
