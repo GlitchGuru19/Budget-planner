@@ -1,89 +1,198 @@
 //A simple program that helps you calculate your budget
 #include "BudgetPlanner.h"
-#include <iostream> //For basic I/O operation
-#include <conio.h>
+#include "Loading.h"
 
 using namespace std;
 
-void Loading();
+const int MAX_ITEMS = 100; // Maximum number of items
 
-const int MAX_ITEMS = 100;// Maximum anticipated number for items in a particular budget
+class Item {
+private:
+    string name; // Item name
+    float price; // Item price
 
-struct Item // A structure for the items we get from the user
-{
-    string name;
-    float price;
+public:
+    // Constructor
+    Item() : name(""), price(0.0f) {}
+
+    // Getters
+    string getName() const { return name; }
+    float getPrice() const { return price; }
+
+    // Setters
+    void setName(string n) {
+        if (!n.empty()) {
+            name = n;
+        }
+    }
+    void setPrice(float p) {
+        if (p >= 0) {
+            price = p;
+        }
+    }
+};
+
+class BudgetPlanner {
+private:
+    Item items[MAX_ITEMS]; // Array of items
+    int itemCount;         // Number of items
+    float budget;          // User budget
+    float totalExpenses;   // Total cost of items
+    string date;           // Purchase date
+    string filename;       // Output file name
+
+    // Validate inputs
+    bool isValidItemCount(int count) const {
+        if (count <= 0 || count > MAX_ITEMS) {
+            cout << "Invalid number of items.\n";
+            return false;
+        }
+        return true;
+    }
+
+    bool isValidBudget(float b) const {
+        if (b < 0) {
+            cout << "Budget cannot be negative.\n";
+            return false;
+        }
+        return true;
+    }
+
+    bool isValidDate(string d) const {
+        if (d.empty()) {
+            cout << "Date cannot be empty.\n";
+            return false;
+        }
+        return true;
+    }
+
+public:
+    // Constructor
+    BudgetPlanner() : itemCount(0), budget(0.0f), totalExpenses(0.0f), date(""), filename("budget.txt") {}
+
+    // Input budget, date, and items
+    bool inputBudgetAndItems() {
+        cout << "Enter purchase date (e.g., 2025-05-17): ";
+        getline(cin, date);
+        if (!isValidDate(date)) {
+            return false;
+        }
+
+        cout << "How many items do you want to calculate (max " << MAX_ITEMS << ")?\n";
+        cout << "Enter your response here: ";
+        cin >> itemCount;
+        cin.ignore(); // Clear newline
+        if (!isValidItemCount(itemCount)) {
+            red;
+            return false;
+        }
+
+        cout << "Enter your budget price: K ";
+        cin >> budget;
+        cin.ignore(); // Clear newline
+        if (!isValidBudget(budget)) {
+            red;
+            return false;
+        }
+
+        for (int i = 0; i < itemCount; ++i) {
+            string name;
+            float price;
+            cout << "Enter the name of the item at position " << i + 1 << ": ";
+            getline(cin, name);
+            if (name.empty()) {
+                cout << "Item name cannot be empty.\n";
+                red;
+                return false;
+            }
+
+            try {
+                cout << "Enter the price of " << name << ": K ";
+                cin >> price;
+                cin.ignore(); // Clear newline
+                if (cin.fail() || price < 0) {
+                    throw(404);
+                }
+                items[i].setName(name);
+                items[i].setPrice(price);
+                cout << ".\n\n";
+            } catch (int wrongInput) {
+                cout << "Error " << wrongInput << ". You entered a wrong character. Closing program...\n";
+                red;
+                Sleep(500);
+                exit(0);
+            }
+        }
+        return true;
+    }
+
+    // Calculate total expenses and remaining budget
+    void calculateBudget() {
+        totalExpenses = 0;
+        for (int i = 0; i < itemCount; ++i) {
+            totalExpenses += items[i].getPrice();
+        }
+    }
+
+    // Save items and date to file
+    bool saveToFile() {
+        ofstream file(filename, ios::app);
+        if (!file.is_open()) {
+            cout << "Error: Cannot open file for writing.\n";
+            return false;
+        }
+
+        file << "Date: " << date << "\n";
+        for (int i = 0; i < itemCount; ++i) {
+            file << items[i].getName() << ": K " << items[i].getPrice() << "\n";
+        }
+        file << "Total Expenses: K " << totalExpenses << "\n";
+        file << "----\n";
+        file.close();
+        return true;
+    }
+
+    // Display results
+    void displayResults() {
+        cout << "\nPurchases for " << date << ":\n";
+        cout << "Total Expenses: K " << totalExpenses << "\n";
+        float remaining = budget - totalExpenses;
+        if (remaining >= 0) {
+            cout << "You are within budget.\n\n";
+        } else {
+            cout << "You are over the budget.\n\n";
+            red;
+        }
+        cout << "Remaining amount: K " << remaining << "\n";
+        cout << "\nPress any key to exit the program.\n";
+        getch();
+        Loading();
+        cout << "\n\n\n\t\tThank you for using the program.\n";
+    }
+
+    // Run the budgeting process
+    void run() {
+        cout << "\nWelcome to the Budget Planner\n";
+        cout << "---------------------------\n\n";
+        if (inputBudgetAndItems()) {
+            calculateBudget();
+            if (!saveToFile()) {
+                cout << "Warning: Failed to save to file, continuing...\n";
+            }
+            displayResults();
+        } else {
+            cout << "Program terminated due to invalid input.\n";
+            red;
+            getch();
+            Loading();
+            cout << "\n\n\n\t\tThank you for using the program.\n";
+        }
+    }
 };
 
 int main()
 {
-    Item items[MAX_ITEMS];
-    int itemCount;
-    float budget;
-
-    Login();
-
-    cout << endl <<"How many items do you want to calculate (max " << MAX_ITEMS << ") ? " << endl;
-    cout << "Enter your response here: ";
-    cin >> itemCount;
-    if (itemCount > MAX_ITEMS || itemCount <= 0) // simple error checker to see if the user inputs a wrong number which is on the boundaries
-    {
-        cout << "Invalid number of items." << endl;
-        red;
-        return 1;
-    }
-    cout << "Enter your budget price: K ";
-    cin >> budget;
-
-    float totalExpenses = 0;
-
-    for (int i = 0; i < itemCount ; ++i)
-    {
-        cout << "Enter the name of the item at position " << i + 1 << " : ";
-        cin.ignore();
-        getline(cin, items[i].name);
-        try // An exception for when the user enters a letter or any character on the keyboard instead of a number.
-        {
-            cout << "Enter the price of " << items[i].name << ": K ";
-            cin >> items[i].price;
-            if (items[i].price)
-            {
-                cout << "." << endl;
-            }
-            else
-            {
-                throw(404);
-            }
-        }
-        catch(int wrongInput)
-        {
-            cout << "Error" << wrongInput << ". You entered a wrong character.Closing program..." << endl;
-            red;
-            Sleep(500);
-            exit(0);
-        }
-        cout << endl << endl;
-        totalExpenses += items[i].price;
-    }
-
-    cout << "\nTotal Expenses: K " << totalExpenses << endl;
-    float remaining = budget - totalExpenses;
-    if (remaining >= 0)
-    {
-        cout << "You are within budget." << endl << endl;
-    }
-    else
-    {
-        cout << "You are over the budget." << endl << endl;
-        red;
-    }
-    cout << "Remaining amount: K " << remaining << endl;
-    cout << "\nPress any key to exit the program." << endl;
-    getch();
-    Loading();
-    cout << "\n\n\n\t\tThank you for using the program." << endl;
-
+    BudgetPlanner planner;
+    planner.run();
     return 0;
 }
-
-
